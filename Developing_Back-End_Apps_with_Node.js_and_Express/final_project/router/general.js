@@ -4,9 +4,7 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
-
-
-const checkExist = (username)=>{
+const doesExist = (username)=>{
   let userswithsamename = users.filter((user)=>{
     return user.username === username
   });
@@ -16,8 +14,6 @@ const checkExist = (username)=>{
     return false;
   }
 }
-
-
 
 
 public_users.post("/register", (req,res) => {
@@ -43,71 +39,68 @@ public_users.get('/',function (req, res) {
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-
-  const isbn = req.params.isbn;
-  res.send(books[isbn])
+  const ISBN = req.params.isbn;
+  
+  res.send(books[ISBN])
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  let detls = []
+  let ans = []
     for(const [key, values] of Object.entries(books)){
         const book = Object.entries(values);
         for(let i = 0; i < book.length ; i++){
             if(book[i][0] == 'author' && book[i][1] == req.params.author){
-              detls.push(books[key]);
+                ans.push(books[key]);
             }
         }
     }
-    if(detls.length == 0){
+    if(ans.length == 0){
         return res.status(300).json({message: "Failed: author not found"});
     }
-    res.send(detls);
+    res.send(ans);
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-
-  let allBooks = []
+  let ans = []
   for(const [key, values] of Object.entries(books)){
       const book = Object.entries(values);
       for(let i = 0; i < book.length ; i++){
           if(book[i][0] == 'title' && book[i][1] == req.params.title){
-              aallBooksns.push(books[key]);
+              ans.push(books[key]);
           }
       }
   }
-  if(allBooks.length == 0){
+  if(ans.length == 0){
       return res.status(300).json({message: "Title not found"});
   }
-  res.send(allBooks);
+  res.send(ans);
 });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-
-  const isbn = req.params.isbn;
-  res.send(books[isbn].reviews)
+  const ISBN = req.params.isbn;
+  res.send(books[ISBN].reviews)
 });
 
-//Task 10
+// Task 10 
 
-function getBooksList(){
+function getBookList(){
   return new Promise((resolve,reject)=>{
     resolve(books);
   })
 }
 
+
 public_users.get('/',function (req, res) {
-  getBooksList().then(
+  getBookList().then(
     (bk)=>res.send(JSON.stringify(bk, null, 4)),
     (error) => res.send("denied")
   );  
 });
 
-
-//Task 11
-
+// Task 11
 
 
 function getFromISBN(isbn){
@@ -116,7 +109,7 @@ function getFromISBN(isbn){
     if (book_) {
       resolve(book_);
     }else{
-      reject("Failure: book not found");
+      reject("Unable to find book!");
     }    
   })
 }
@@ -130,8 +123,8 @@ public_users.get('/isbn/:isbn',function (req, res) {
   )
  });
 
+// Task 12
 
- //Task 12
 
 function getFromAuthor(author){
   let output = [];
@@ -155,9 +148,7 @@ public_users.get('/author/:author',function (req, res) {
   );
 });
 
-
-
-//Task 13
+// Task 13
 
 
 function getFromTitle(title){
@@ -173,7 +164,6 @@ function getFromTitle(title){
   })
 }
 
-
 public_users.get('/title/:title',function (req, res) {
   const title = req.params.title;
   getFromTitle(title)
@@ -181,18 +171,5 @@ public_users.get('/title/:title',function (req, res) {
     result =>res.send(JSON.stringify(result, null, 4))
   );
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 module.exports.general = public_users;

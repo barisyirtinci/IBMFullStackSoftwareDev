@@ -6,10 +6,10 @@ const genl_routes = require('./router/general.js').general;
 
 let users = []
 
-const checkExist = (uname)=>{
+const checkExist = (username)=>{
     //User existence check
     let sameNameUsers = users.filter((user)=>{
-      return user.username === uname
+      return user.username === username
     });
     if(sameNameUsers.length > 0){
       return true;
@@ -18,10 +18,10 @@ const checkExist = (uname)=>{
     }
 }
 
-const checkAuthenticatedUser = (uname,pwd)=>{
+const checkAuthenticatedUser = (username,password)=>{
     //User authentication check
     let validatedUsers = users.filter((user)=>{
-      return (user.username === uname && user.password === pwd)
+      return (user.username === username && user.password === password)
     });
     if(validatedUsers.length > 0){
       return true;
